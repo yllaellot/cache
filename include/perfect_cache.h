@@ -5,10 +5,6 @@
 #include <unordered_map>
 #include <algorithm>
 
-#ifndef __clang__
-#error("Expect clang compiler due to explicit specialization of member function in class")
-#endif
-
 namespace cachep {
 
 template <typename PageIdT, typename DataT>
@@ -40,21 +36,15 @@ public:
         using VecPageItT = typename std::vector<PageT>::iterator;
         VecPageItT start = prediction.begin();
         VecPageItT end = prediction.end();
-        VecPageItT beg = prediction.begin();
+        //VecPageItT beg = prediction.begin();
         VecPageItT begs = prediction.begin();
 
-        for_each(prediction.begin(), prediction.end(), [&start,
-                                                        &end,
-                                                        &beg,
-                                                        &begs  ](PageT& page)
+        for_each(prediction.begin(), prediction.end(), [&](PageT& page)
         {
             start = begs;
             begs++;
-            start = std::find_if(start + 1, end, [&start,
-                                                  &end,
-                                                  &beg,
-                                                  &page     ](auto i){ return i.first == page.first; });
-            if ( start != end ) { page.second = std::distance(beg, start); }
+            start = std::find_if(start + 1, end, [&](auto i){ return i.first == page.first; });
+            if ( start != end ) { page.second = std::distance(prediction.begin(), start); }
         });
 
         farthest_page_ind = 0;
@@ -68,7 +58,6 @@ public:
             if (page.second == -1)
             {
                 pages_erase(page);
-
                 data_erase(page);
             }
             else
@@ -118,12 +107,11 @@ public:
                 farthest_page_it = fpi_it;
             }
 
-            pages_erase(erase_aplicant);
+            pages_erase_IT(erase_aplicant);
 
             if ( erase_aplicant->first != page.first )
             {
-                data_erase(erase_aplicant->first);
-
+                data_erase_PI(erase_aplicant->first);
                 data_push_front(page, slow_get_page);
             }
 
@@ -177,34 +165,29 @@ private:
         hash_data[page.first] = list_data.begin();
     }
 
-    template <typename T> 
-    void pages_erase(T erase_aplicant)
+    void pages_erase(PageT erase_aplicant)
     {
         list_pages.erase(hash_pages[erase_aplicant.first]);
         hash_pages.erase(hash_pages.find(erase_aplicant.first));
     }
 
-    template <>
-    void pages_erase<List_pages_it> (List_pages_it erase_aplicant)
+    void pages_erase_IT(List_pages_it erase_aplicant)
     {
         hash_pages.erase(hash_pages.find(erase_aplicant->first));
         list_pages.erase(erase_aplicant);
     }
 
-    template <typename T> 
-    void data_erase(T page)
+    void data_erase(PageT page)
     {
         list_data.erase(hash_data[page.first]);
         hash_data.erase(hash_data.find(page.first));
     }
 
-    template <>
-    void data_erase(PageIdT page)
+    void data_erase_PI(PageIdT page)
     {
         list_data.erase(hash_data[page]);
         hash_data.erase(hash_data.find(page));
     }
-
 };
 
 }
