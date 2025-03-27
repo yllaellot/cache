@@ -48,8 +48,8 @@ namespace testf
 
         if ( cache_type == "perfect" )
         {
-            cachep::perfect_cache <PageIdT, DataT> cur_cache(size_cache, pages);
-            hits = cur_cache.hits(slow_get_page_i);
+            cachep::perfect_cache <PageIdT, DataT> cur_cache(size_cache, pages.begin(), pages.end());
+            hits = cur_cache.hits(pages.begin(), pages.end(), slow_get_page_i);
         }
         else
         {

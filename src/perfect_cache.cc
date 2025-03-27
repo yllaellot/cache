@@ -1,5 +1,4 @@
 #include "../include/perfect_cache.h"
-
 int slow_get_page (int page)
 {
     return page;
@@ -44,7 +43,8 @@ int main()
         }
     }
 
-    cachep::perfect_cache <PageIdT, DataT> cur_cache(size_cache, pages);
+    cachep::perfect_cache <PageIdT, DataT> cur_cache(size_cache, pages.begin(), pages.end());
+    int hits = cur_cache.hits(pages.begin(), pages.end(), slow_get_page);
 
-    std::cout << cur_cache.hits(slow_get_page) << std::endl;
+    std::cout << hits << std::endl;
 }

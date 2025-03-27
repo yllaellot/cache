@@ -1,0 +1,50 @@
+[
+{
+  "directory": "/home/yllaellot/progs/vlados/build",
+  "command": "/usr/bin/clang++  -I/home/yllaellot/progs/vlados/include -I/home/yllaellot/progs/vlados/./include -O3 -DNDEBUG -std=gnu++20 -o CMakeFiles/cache.dir/src/cache.cc.o -c /home/yllaellot/progs/vlados/src/cache.cc",
+  "file": "/home/yllaellot/progs/vlados/src/cache.cc",
+  "output": "CMakeFiles/cache.dir/src/cache.cc.o"
+},
+{
+  "directory": "/home/yllaellot/progs/vlados/build",
+  "command": "/usr/bin/clang++  -I/home/yllaellot/progs/vlados/include -I/home/yllaellot/progs/vlados/./include -O3 -DNDEBUG -std=gnu++20 -o CMakeFiles/perfect_cache.dir/src/perfect_cache.cc.o -c /home/yllaellot/progs/vlados/src/perfect_cache.cc",
+  "file": "/home/yllaellot/progs/vlados/src/perfect_cache.cc",
+  "output": "CMakeFiles/perfect_cache.dir/src/perfect_cache.cc.o"
+},
+{
+  "directory": "/home/yllaellot/progs/vlados/build/googletest/googlemock",
+  "command": "/usr/bin/clang++  -I/home/yllaellot/progs/vlados/googletest/googlemock/include -I/home/yllaellot/progs/vlados/googletest/googlemock -isystem /home/yllaellot/progs/vlados/googletest/googletest/include -isystem /home/yllaellot/progs/vlados/googletest/googletest -O3 -DNDEBUG -std=c++20 -Wall -Wshadow -Wconversion -Wundef -DGTEST_HAS_PTHREAD=1 -fexceptions -W -Wpointer-arith -Wreturn-type -Wcast-qual -Wwrite-strings -Wswitch -Wunused-parameter -Wcast-align -Winline -Wredundant-decls -Wchar-subscripts -o CMakeFiles/gmock.dir/src/gmock-all.cc.o -c /home/yllaellot/progs/vlados/googletest/googlemock/src/gmock-all.cc",
+  "file": "/home/yllaellot/progs/vlados/googletest/googlemock/src/gmock-all.cc",
+  "output": "googletest/googlemock/CMakeFiles/gmock.dir/src/gmock-all.cc.o"
+},
+{
+  "directory": "/home/yllaellot/progs/vlados/build/googletest/googlemock",
+  "command": "/usr/bin/clang++  -isystem /home/yllaellot/progs/vlados/googletest/googlemock/include -isystem /home/yllaellot/progs/vlados/googletest/googlemock -isystem /home/yllaellot/progs/vlados/googletest/googletest/include -isystem /home/yllaellot/progs/vlados/googletest/googletest -O3 -DNDEBUG -std=c++20 -Wall -Wshadow -Wconversion -Wundef -DGTEST_HAS_PTHREAD=1 -fexceptions -W -Wpointer-arith -Wreturn-type -Wcast-qual -Wwrite-strings -Wswitch -Wunused-parameter -Wcast-align -Winline -Wredundant-decls -Wchar-subscripts -o CMakeFiles/gmock_main.dir/src/gmock_main.cc.o -c /home/yllaellot/progs/vlados/googletest/googlemock/src/gmock_main.cc",
+  "file": "/home/yllaellot/progs/vlados/googletest/googlemock/src/gmock_main.cc",
+  "output": "googletest/googlemock/CMakeFiles/gmock_main.dir/src/gmock_main.cc.o"
+},
+{
+  "directory": "/home/yllaellot/progs/vlados/build/googletest/googletest",
+  "command": "/usr/bin/clang++  -I/home/yllaellot/progs/vlados/googletest/googletest/include -I/home/yllaellot/progs/vlados/googletest/googletest -O3 -DNDEBUG -std=c++20 -Wall -Wshadow -Wconversion -Wundef -DGTEST_HAS_PTHREAD=1 -fexceptions -W -Wpointer-arith -Wreturn-type -Wcast-qual -Wwrite-strings -Wswitch -Wunused-parameter -Wcast-align -Winline -Wredundant-decls -Wchar-subscripts -o CMakeFiles/gtest.dir/src/gtest-all.cc.o -c /home/yllaellot/progs/vlados/googletest/googletest/src/gtest-all.cc",
+  "file": "/home/yllaellot/progs/vlados/googletest/googletest/src/gtest-all.cc",
+  "output": "googletest/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.o"
+},
+{
+  "directory": "/home/yllaellot/progs/vlados/build/googletest/googletest",
+  "command": "/usr/bin/clang++  -isystem /home/yllaellot/progs/vlados/googletest/googletest/include -isystem /home/yllaellot/progs/vlados/googletest/googletest -O3 -DNDEBUG -std=c++20 -Wall -Wshadow -Wconversion -Wundef -DGTEST_HAS_PTHREAD=1 -fexceptions -W -Wpointer-arith -Wreturn-type -Wcast-qual -Wwrite-strings -Wswitch -Wunused-parameter -Wcast-align -Winline -Wredundant-decls -Wchar-subscripts -o CMakeFiles/gtest_main.dir/src/gtest_main.cc.o -c /home/yllaellot/progs/vlados/googletest/googletest/src/gtest_main.cc",
+  "file": "/home/yllaellot/progs/vlados/googletest/googletest/src/gtest_main.cc",
+  "output": "googletest/googletest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.o"
+},
+{
+  "directory": "/home/yllaellot/progs/vlados/build/tests",
+  "command": "/usr/bin/clang++ -DTEST_DATA_DIR=\\\"/home/yllaellot/progs/vlados/tests\\\" -I/home/yllaellot/progs/vlados/./include -I/home/yllaellot/progs/vlados/include -I/home/yllaellot/progs/vlados/src -I/home/yllaellot/progs/vlados/tests/test_implementation -isystem /home/yllaellot/progs/vlados/googletest/googletest/include -isystem /home/yllaellot/progs/vlados/googletest/googletest -O3 -DNDEBUG -std=gnu++20 -o CMakeFiles/cache_test.dir/cache_test.cc.o -c /home/yllaellot/progs/vlados/tests/cache_test.cc",
+  "file": "/home/yllaellot/progs/vlados/tests/cache_test.cc",
+  "output": "tests/CMakeFiles/cache_test.dir/cache_test.cc.o"
+},
+{
+  "directory": "/home/yllaellot/progs/vlados/build/tests",
+  "command": "/usr/bin/clang++ -DTEST_DATA_DIR=\\\"/home/yllaellot/progs/vlados/tests\\\" -I/home/yllaellot/progs/vlados/./include -I/home/yllaellot/progs/vlados/include -I/home/yllaellot/progs/vlados/src -I/home/yllaellot/progs/vlados/tests/test_implementation -isystem /home/yllaellot/progs/vlados/googletest/googletest/include -isystem /home/yllaellot/progs/vlados/googletest/googletest -O3 -DNDEBUG -std=gnu++20 -o CMakeFiles/perfect_cache_test.dir/perfect_cache_test.cc.o -c /home/yllaellot/progs/vlados/tests/perfect_cache_test.cc",
+  "file": "/home/yllaellot/progs/vlados/tests/perfect_cache_test.cc",
+  "output": "tests/CMakeFiles/perfect_cache_test.dir/perfect_cache_test.cc.o"
+}
+]

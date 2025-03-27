@@ -1,8 +1,8 @@
+#include <deque>
 #include <iostream>
-#include <list>
-#include <ranges>
 #include <vector>
 #include <unordered_map>
+#include <map>
 #include <algorithm>
 
 namespace cachep {
@@ -13,181 +13,147 @@ class perfect_cache
     static_assert( std::is_integral_v<PageIdT> || std::is_same_v<PageIdT, std::string>, 
                  "Incorrect Page Id Type. Expected integral or string type");
 
-    using PageT = typename std::pair<PageIdT, int>;
-    using List_pages = typename std::list<PageT>;
-    using List_pages_it = typename List_pages ::iterator;
-    using List_data_it = typename std::list<DataT>::iterator;
+    using Index = size_t;
+    using PageT = typename std::pair<PageIdT, DataT>;
+    using ListIndex = typename std::deque<Index>;
+    using VecIterator = typename std::vector<PageIdT>::iterator;
+    using CacheIterator = typename std::map<Index, PageT>::iterator;
+    using PredictionIterator = typename std::unordered_map<PageIdT, ListIndex>::iterator;
+
 
 public:
 
-    perfect_cache(int cache_size, 
-                std::vector<PageIdT> cache_prediction)
+    perfect_cache (const int& cache_size, const VecIterator& begin, const VecIterator& end) :
+    size_(0),
+    hits_(0),
+    capacity_(cache_size)
     {
-        cur_pos = 0;
-        size = cache_size;
+        Index index = 0;
 
-        prediction.reserve(cache_prediction.size());
-
-        for_each(cache_prediction.begin(), cache_prediction.end(), [&prediction = prediction](PageIdT& pageID)
+        std::for_each(begin, end, [&](PageIdT& pageID)
         {
-            prediction.push_back({pageID, -1});
+            if (!prediction_.count(pageID))
+            {
+                prediction_.emplace(pageID, ListIndex{index});
+            }
+            else prediction_[pageID].push_back(index);
+
+            index++;
         });
-
-        using VecPageItT = typename std::vector<PageT>::iterator;
-        VecPageItT start = prediction.begin();
-        VecPageItT end = prediction.end();
-        //VecPageItT beg = prediction.begin();
-        VecPageItT begs = prediction.begin();
-
-        for_each(prediction.begin(), prediction.end(), [&](PageT& page)
-        {
-            start = begs;
-            begs++;
-            start = std::find_if(start + 1, end, [&](auto i){ return i.first == page.first; });
-            if ( start != end ) { page.second = std::distance(prediction.begin(), start); }
-        });
-
-        farthest_page_ind = 0;
-        farthest_page_it = list_pages.begin();
     }
 
-    template <typename FuncT> bool lookup_update(PageT page, const FuncT& slow_get_page)
+    void cache_update (PageIdT& pageID)
     {
-        if ( hash_pages.find(page.first) != hash_pages.end() )
-        {
-            if (page.second == -1)
-            {
-                pages_erase(page);
-                data_erase(page);
-            }
-            else
-            {
-                if (page.second > farthest_page_ind)
-                {
-                    farthest_page_ind = page.second;
-                    farthest_page_it = hash_pages[page.first];
-                }
+        CacheIterator curr_cache_pos_it = cache_.find(prediction_[pageID].front());
+        PredictionIterator curr_prediction_pos_it = prediction_.find(pageID);
+        ListIndex& indexes_list = curr_prediction_pos_it->second;
 
-                hash_pages[page.first]->second =  page.second;
-            }
-            return true;   
+        if (!indexes_list.empty()) indexes_list.pop_front();
+
+        if (!indexes_list.empty())
+        {
+            Index next_index = indexes_list.front();
+
+            cache_.emplace(next_index, curr_cache_pos_it->second);
+            cache_.erase(curr_cache_pos_it);
+        }
+        else
+        {
+            cache_.erase(curr_cache_pos_it);
+            prediction_.erase(curr_prediction_pos_it);
+            size_--;
+        }
+    }
+
+    bool is_full ()
+    {
+        return size_ == capacity_ ? true : false;
+    }
+
+    void erase_page (ListIndex& prediction_new)
+    {
+        CacheIterator farthest_page = std::prev(cache_.end());
+        Index farthest_index = farthest_page->first;
+        Index farthest_index_new = prediction_new.front();
+
+        if (farthest_index_new > farthest_index)
+        {
+            prediction_new.pop_front();
+
+            return;
         }
 
-        if ( page.second == -1 )
+        cache_.erase(farthest_page);
+
+        size_--;
+    }
+
+    void add_page (PageIdT pageID, DataT data)
+    {
+        ListIndex& prediction_new = prediction_.at(pageID);
+
+        if (!prediction_new.empty())  prediction_new.pop_front();
+    
+        if (prediction_new.empty()) return;
+
+        if (is_full()) 
         {
-            return false;
-        }
+            CacheIterator farthest_page = std::prev(cache_.end());
+            Index farthest_index = farthest_page->first;
+            Index farthest_index_new = prediction_new.front();
 
-        list_pages.push_front(page);
-        hash_pages[page.first] = list_pages.begin();
-        List_pages_it erase_aplicant = farthest_page_it;
-
-        if ( list_pages.size() - 1 == size )
-        {
-
-            if ( farthest_page_ind < page.second )
+            if (farthest_index_new > farthest_index)
             {
-                erase_aplicant = list_pages.begin();
-            }
-            else
-            {
-                int fpi = 0;
-                List_pages_it fpi_it;
+                prediction_new.pop_front();
 
-                for (auto it = list_pages.begin(); it != list_pages.end(); it++)
-                {
-                    if ( fpi < it->second && it != farthest_page_it )
-                    {
-                        fpi = it->second;
-                        fpi_it = it;
-                    }   
-                }
-
-                farthest_page_ind = fpi;
-                farthest_page_it = fpi_it;
+                return;
             }
 
-            pages_erase_IT(erase_aplicant);
+            cache_.erase(farthest_page);
 
-            if ( erase_aplicant->first != page.first )
-            {
-                data_erase_PI(erase_aplicant->first);
-                data_push_front(page, slow_get_page);
-            }
-
-            return false;
+            size_--;
         }
 
-        data_push_front(page, slow_get_page);
+        cache_.emplace(prediction_new.front(), std::make_pair(pageID, data));
 
-        if ( farthest_page_ind < page.second )
+        size_++;
+    }
+
+    template <typename FuncT> bool lookup_update(PageIdT pageID, const FuncT& slow_get_page)
+    {
+        if (cache_.count(prediction_[pageID].front()))
         {
-            farthest_page_ind = page.second;
-            farthest_page_it = list_pages.begin();
+            cache_update(pageID);
+
+            hits_++;
+            return true;
         }
+
+        DataT page_data = slow_get_page(pageID);
+
+        add_page(pageID, page_data);
 
         return false;
     }
 
-    template <typename FuncT> int hits(const FuncT& slow_get_page)
+    template <typename FuncT> size_t hits(const VecIterator& begin,
+                                          const VecIterator& end,
+                                          const FuncT& slow_get_page)
     {
-        if ( prediction.empty() ) throw "Empty prediction";
+        if ( prediction_.empty() ) throw "Empty prediction";
         
-        int num_hits = 0;
+        std::for_each(begin, end, [&](PageIdT& pageID){ lookup_update(pageID, slow_get_page); });
 
-        for (auto page : prediction)
-        {
-            if ( lookup_update(page, slow_get_page) )
-            {
-                ++num_hits;
-            }
-        }
-
-        return num_hits;
+        return hits_;
     }
 
 private:
 
-    int size;
-    int cur_pos;
-    int farthest_page_ind;
-    List_pages_it farthest_page_it; 
-    List_pages list_pages;
-    std::list<DataT> list_data;
-    std::vector<PageT> prediction;
-    std::unordered_map< PageIdT,List_pages_it> hash_pages;
-    std::unordered_map< PageIdT, List_data_it> hash_data;
+    int size_;
+    int hits_;
+    int capacity_;
 
-    template <typename FuncT> void data_push_front(PageT page,
-                                                   const FuncT& slow_get_page)
-    {
-        list_data.push_front(slow_get_page(page.first));
-        hash_data[page.first] = list_data.begin();
-    }
-
-    void pages_erase(PageT erase_aplicant)
-    {
-        list_pages.erase(hash_pages[erase_aplicant.first]);
-        hash_pages.erase(hash_pages.find(erase_aplicant.first));
-    }
-
-    void pages_erase_IT(List_pages_it erase_aplicant)
-    {
-        hash_pages.erase(hash_pages.find(erase_aplicant->first));
-        list_pages.erase(erase_aplicant);
-    }
-
-    void data_erase(PageT page)
-    {
-        list_data.erase(hash_data[page.first]);
-        hash_data.erase(hash_data.find(page.first));
-    }
-
-    void data_erase_PI(PageIdT page)
-    {
-        list_data.erase(hash_data[page]);
-        hash_data.erase(hash_data.find(page));
-    }
+    std::unordered_map<PageIdT, ListIndex> prediction_;
+    std::map<Index, PageT> cache_;
 };
-
 }
