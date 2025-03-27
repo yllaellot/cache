@@ -4,9 +4,8 @@
 Сборка проекта:
 > Note: `<Результат сборки будет лежать в в поддиректории проекта build*`
 ```sh
-CXX=clang++ cmake -B build
+cmake -B build
 ```
-> Note: `<Сборка другим компилятором возможно приведет к ошибке компиляции явной спецификации функции шаблонного класса, в стандарте начиная с с++17 это разрешено, но есть группа компиляторов которые это не поддерживают (в частности g++)"An explicit specialization ... may be declared in any scope in which the corresponding primary template may be defined (_N4868_.9.8.2.3 [namespace.memdef], 11.4 [class.mem], 13.7.3 [temp.mem])."*`
 
 # Исползование 
 ## Тесты :

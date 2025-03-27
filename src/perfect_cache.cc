@@ -1,4 +1,4 @@
-#include "../include/perfect_cache.h"
+#include "perfect_cache.h"
 int slow_get_page (int page)
 {
     return page;

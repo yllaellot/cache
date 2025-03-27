@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <vector>
+#include <filesystem>
 #include "perfect_cache.h"
 #include "cache.h"
 
@@ -72,14 +74,19 @@ namespace testf
 
     void run_test (const std::string& test_name, const std::string& type)
     {
-        std::string test_data_dir = "/data/";
-        std::string task_data_dir = "tasks/";
-        std::string ans_data_dir = "answers/";
-        std::string test_path = std::string(TEST_DATA_DIR) + test_data_dir;
+        std::filesystem::path test_task_path = std::filesystem::current_path().parent_path().parent_path();
+        std::filesystem::path test_ans_path = std::filesystem::current_path().parent_path().parent_path();
+
         std::string answer_type = ( type == "perfect" ) ? "_perfect.ans" : "_cache.ans";
 
-        int res = result(test_path + task_data_dir + test_name + ".dat", type);
-        int ans = answer( test_path + ans_data_dir + test_name + answer_type );
+        test_task_path /= "tests/data/tasks/" + test_name + ".dat";
+        test_ans_path /= "tests/data/answers/" + test_name + answer_type;
+
+        std::cerr <<  test_task_path << std::endl;
+        std::cerr <<  test_ans_path << std::endl;
+
+        int res = result(test_task_path, type);
+        int ans = answer(test_ans_path);
 
         EXPECT_EQ(res, ans);
     }
