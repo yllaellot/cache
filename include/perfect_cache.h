@@ -44,6 +44,44 @@ public:
         });
     }
 
+    template <typename FuncT> bool lookup_update(PageIdT pageID, const FuncT& slow_get_page)
+    {
+        if (cache_.count(prediction_[pageID].front()))
+        {
+            cache_update(pageID);
+
+            hits_++;
+            return true;
+        }
+
+        DataT page_data = slow_get_page(pageID);
+
+        add_page(pageID, page_data);
+
+        return false;
+    }
+
+    template <typename FuncT> size_t hits(const VecIterator& begin,
+                                          const VecIterator& end,
+                                          const FuncT& slow_get_page)
+    {
+        if ( prediction_.empty() ) throw "Empty prediction";
+        
+        std::for_each(begin, end, [&](PageIdT& pageID){ lookup_update(pageID, slow_get_page); });
+
+        return hits_;
+    }
+
+private:
+
+    int size_;
+    int hits_;
+    int capacity_;
+
+    std::unordered_map<PageIdT, ListIndex> prediction_;
+    std::map<Index, PageT> cache_;
+
+
     void cache_update (PageIdT& pageID)
     {
         CacheIterator curr_cache_pos_it = cache_.find(prediction_[pageID].front());
@@ -120,42 +158,5 @@ public:
 
         size_++;
     }
-
-    template <typename FuncT> bool lookup_update(PageIdT pageID, const FuncT& slow_get_page)
-    {
-        if (cache_.count(prediction_[pageID].front()))
-        {
-            cache_update(pageID);
-
-            hits_++;
-            return true;
-        }
-
-        DataT page_data = slow_get_page(pageID);
-
-        add_page(pageID, page_data);
-
-        return false;
-    }
-
-    template <typename FuncT> size_t hits(const VecIterator& begin,
-                                          const VecIterator& end,
-                                          const FuncT& slow_get_page)
-    {
-        if ( prediction_.empty() ) throw "Empty prediction";
-        
-        std::for_each(begin, end, [&](PageIdT& pageID){ lookup_update(pageID, slow_get_page); });
-
-        return hits_;
-    }
-
-private:
-
-    int size_;
-    int hits_;
-    int capacity_;
-
-    std::unordered_map<PageIdT, ListIndex> prediction_;
-    std::map<Index, PageT> cache_;
 };
 }
