@@ -34,10 +34,7 @@ public:
 
         std::for_each(begin, end, [&](PageIdT& pageID)
         {
-            if (!prediction_.count(pageID))
-            {
-                prediction_.emplace(pageID, ListIndex{index});
-            }
+            if (!prediction_.count(pageID)) prediction_.emplace(pageID, ListIndex{index});
             else prediction_[pageID].push_back(index);
 
             index++;
@@ -65,7 +62,7 @@ public:
                                           const VecIterator& end,
                                           const FuncT& slow_get_page)
     {
-        if ( prediction_.empty() ) throw "Empty prediction";
+        if (prediction_.empty()) throw "Empty prediction";
         
         std::for_each(begin, end, [&](PageIdT& pageID){ lookup_update(pageID, slow_get_page); });
 
@@ -107,7 +104,7 @@ private:
 
     bool is_full ()
     {
-        return size_ == capacity_ ? true : false;
+        return size_ == capacity_;
     }
 
     void erase_page (ListIndex& prediction_new)

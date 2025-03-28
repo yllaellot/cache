@@ -42,10 +42,9 @@ public:
 
     template <typename FuncT> bool lookup_update (PageIdT page, const FuncT& slow_get_page)
     {
-        if ( hash_main.find(page) != hash_main.end() || hash_in.find(page) != hash_in.end() )
-        {
-            return true;
-        }
+        if ( hash_main.find(page) != hash_main.end() || 
+             hash_in.find(page) != hash_in.end() ) 
+             return true;
 
         if ( hash_out.find(page) != hash_out.end() )
         {
@@ -73,10 +72,7 @@ public:
 
         for (PageIdT page : prediction)
         {
-            if ( lookup_update(page, slow_get_page) )
-            {
-                ++num_hits;
-            }
+            if ( lookup_update(page, slow_get_page) ) ++num_hits;
         }
 
         return num_hits;
@@ -100,10 +96,7 @@ private:
 
     void main_push_front(PageIdT page)
     {
-        if ( size_main == 0 )
-        {
-            return;
-        }
+        if ( size_main == 0 ) return;
 
         if ( main.size() == size_main )
         {
@@ -118,10 +111,7 @@ private:
 
     void out_push_front(PageIdT page)
     {
-        if ( size_out == 0 )
-        {
-            return;
-        }
+        if ( size_out == 0 ) return;
 
         if ( out.size() == size_out )
         {
@@ -162,5 +152,4 @@ private:
         hash_data.erase(hash_data.find(page));
     }
 };
-
 }
